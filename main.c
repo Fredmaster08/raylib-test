@@ -1,23 +1,40 @@
 #include <raylib.h>
-#include <stdbool.h>
+#include <stdio.h>
 
 int main(void) {
-
-    bool userInput = 0;
 
     InitWindow(700, 400, "Mattef");
 
     SetExitKey(0);
 
+    int textX = 275;
+    int textY = 175;
+    int speed = 1;
+
     while(!WindowShouldClose()) {
+
+        if(IsKeyDown(KEY_W)) {
+            textY -= speed;
+        }
+        if(IsKeyDown(KEY_A)){
+            textX -= speed;
+        }
+        if(IsKeyDown(KEY_S)){
+            textY += speed;
+        }
+        if(IsKeyDown(KEY_D)){
+            textX += speed;
+        }
 
         BeginDrawing();
         ClearBackground(BLUE);
-        DrawText("Mattef", 275, 175, 50,  LIGHTGRAY);
-        EndDrawing();
+        DrawText("Mattef", textX, textY, 50,  LIGHTGRAY);
+        EndDrawing();   
 
-        if(IsKeyPressed(KEY_W)) {
+        if(IsKeyPressed(KEY_C)) {
+            printf("cya!\n");
             CloseWindow();
+
         }
     }
 

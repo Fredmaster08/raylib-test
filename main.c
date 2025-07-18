@@ -1,8 +1,26 @@
-#include <stdio.h>
+#include <raylib.h>
+#include <stdbool.h>
 
-int main() {
+int main(void) {
 
-    printf("Hello world\n");
+    bool userInput = 0;
 
-    return 0;
+    InitWindow(700, 400, "Mattef");
+
+    SetExitKey(0);
+
+    while(!WindowShouldClose()) {
+
+        BeginDrawing();
+        ClearBackground(BLUE);
+        DrawText("Mattef", 275, 175, 50,  LIGHTGRAY);
+        EndDrawing();
+
+        if(IsKeyPressed(KEY_W)) {
+            CloseWindow();
+        }
+    }
+
+    CloseWindow();
+
 }

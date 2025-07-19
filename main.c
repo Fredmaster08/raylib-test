@@ -1,43 +1,79 @@
+
 #include <raylib.h>
-#include <stdio.h>
+#include <time.h>
+#include <raymath.h>
+#include <stdlib.h>
+#include "asteroid.h"
 
-int main(void) {
+#define NEARBLACK (Color){15, 15, 15, 255}
+#define MAX_ASTEROIDS 64
+static Asteroid _asteroids[MAX_ASTEROIDS] = {0};
 
-    InitWindow(700, 400, "Mattef");
+const int screenWidth = 600;
+const int screenHeight = 600;
+const Vector2 screenSize = {screenWidth, screenHeight};
 
-    SetExitKey(0);
+void UpdateDrawFrame(void);
+void AddAsteroid();
 
-    int textX = 275;
-    int textY = 175;
-    int speed = 1;
+int main() {
 
-    while(!WindowShouldClose()) {
+    srand(time(0));
 
-        if(IsKeyDown(KEY_W)) {
-            textY -= speed;
-        }
-        if(IsKeyDown(KEY_A)){
-            textX -= speed;
-        }
-        if(IsKeyDown(KEY_S)){
-            textY += speed;
-        }
-        if(IsKeyDown(KEY_D)){
-            textX += speed;
-        }
+    InitWindow(screenWidth, screenHeight, "Raylib Asteroids by Fredmaster08");
 
-        BeginDrawing();
-        ClearBackground(BLUE);
-        DrawText("Mattef", textX, textY, 50,  LIGHTGRAY);
-        EndDrawing();   
+    SetTargetFPS(60);
 
-        if(IsKeyPressed(KEY_C)) {
-            printf("cya!\n");
-            CloseWindow();
-
-        }
+    while(!WindowShouldClose) {
+        UpdateDrawFrame();
     }
-
     CloseWindow();
 
+    return 0;
 }
+
+void UpdateDrawFrame(){
+
+    float frametime = GetFrameTime();
+
+    for(int i = 0; i < MAX_ASTEROIDS; i++) {
+        AsteroidUpdate(&_asteroids[i], frametime);
+    }
+
+    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        AddAsteroid(GetMousePosition(), (Vector2){200, 0}, ASTEROID_SMALL);
+    }
+
+    BeginDrawing();
+
+        ClearBackground(NEARBLACK);
+
+        for(int i = 0; i < MAX_ASTEROIDS; i++) {
+            AsteroidDraw(_asteroids[i]);
+        }
+
+    EndDrawing();
+
+}
+
+void AddAsteroid(Vector2 position, Vector2 velocity, AsteroidSize size) {
+
+    bool created = false;
+
+    Asteroid asteroid = CreateAsteroid(position, velocity, size);
+
+    for(int i = 0; i < MAX_ASTEROIDS; i++) {
+        if(_asteroids[i].active) {
+            continue;
+        }
+
+        _asteroids[i] = CreateAsteroid(position, velocity, size);
+        created = true;
+        break;
+    }
+
+    if(!created) {
+        TraceLog(LOG_ERROR, "Failed to create an asteroid because there was no inactive spots in the array!");
+    }
+}
+

@@ -8,7 +8,7 @@ OFILES = $(CFILES:.c=.o)
 all: main
 
 main: $(OFILES)
-	gcc $(CFLAGS) -o $@ $(OFILES) $(LDFLAGS)
+	gcc $(CFLAGS) -o $@ $(OFILES) $(LDFLAGS)	
 	./main
 
 %.o: %.c 
